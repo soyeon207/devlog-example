@@ -1,6 +1,5 @@
-package com.example.devlog;
+package com.example.devlog.job;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -15,24 +14,18 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
-public class BatchConfig {
-
+public class SimpleJobConfig {
     @Bean
-    public Job exampleJob(JobRepository jobRepository, Step step) {
-        return new JobBuilder("exampleJob", jobRepository)
-                .start(step)
-                .build();
+    public Job simpleJob(JobRepository jobRepository, Step step) {
+        return new JobBuilder("simpleJob", jobRepository).start(step).build();
     }
 
     @Bean
     public Step step(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager) {
-        return new StepBuilder("step", jobRepository)
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(" #### Step 실행 ####");
-                    return RepeatStatus.FINISHED;
-                }, platformTransactionManager)
-                .build();
+        return new StepBuilder("simpleStep", jobRepository).tasklet((contribution, chunkContext) -> {
+            log.info(" #### {} 실행 ####", "simpleStep");
+            return RepeatStatus.FINISHED;
+        }, platformTransactionManager).build();
     }
 
 }
